@@ -2953,7 +2953,9 @@ var HtmlRenderer = (function () {
         this.renderStyleValues(elem.cssStyle, result);
         if (this.document) {
             this.document.loadDocumentImage(elem.src, this.currentPart).then(function (x) {
-                result.src = x;
+                this.document.blobToBase64(x).then(base64 => {
+                    result.src = base64;
+                });
             });
         }
         return result;
@@ -4127,9 +4129,7 @@ var WordDocument = (function () {
     };
     WordDocument.prototype.loadDocumentImage = function (id, part) {
         return this.loadResource(part !== null && part !== void 0 ? part : this.documentPart, id, "blob")
-            .then((x) => x ? this.blobToBase64(x) : null)
-        // return this.loadResource(part !== null && part !== void 0 ? part : this.documentPart, id, "blob")
-        //     .then(function (x) { return x ? URL.createObjectURL(x) : null; });
+            .then((x) => x ? x : null);
     };
     WordDocument.prototype.loadNumberingImage = function (id) {
         return this.loadResource(this.numberingPart, id, "blob")
