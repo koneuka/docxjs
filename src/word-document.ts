@@ -153,7 +153,13 @@ export class WordDocument {
 
 	loadDocumentImage(id: string, part?: Part): PromiseLike<string> {
 		return this.loadResource(part ?? this.documentPart, id, "blob")
-			.then(x => x ? URL.createObjectURL(x) : null);
+			.then(x => x ? x : null);
+	}
+
+	blobToBase64(blob) {
+		const reader = new FileReader();
+		reader.readAsDataURL(blob);
+		return new Promise(resolve => reader.onloadend = () => resolve(reader.result));
 	}
 
 	loadNumberingImage(id: string): PromiseLike<string> {

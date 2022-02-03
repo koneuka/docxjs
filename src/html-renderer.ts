@@ -776,7 +776,9 @@ section.${c}>article { margin-bottom: auto; }
 
         if (this.document) {
             this.document.loadDocumentImage(elem.src, this.currentPart).then(x => {
-                result.src = x;
+                this.document.blobToBase64(x).then(base64 => {
+                    result.src = base64;
+                });
             });
         }
 
