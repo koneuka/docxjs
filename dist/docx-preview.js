@@ -4127,7 +4127,9 @@ var WordDocument = (function () {
     };
     WordDocument.prototype.loadDocumentImage = function (id, part) {
         return this.loadResource(part !== null && part !== void 0 ? part : this.documentPart, id, "blob")
-            .then(function (x) { return x ? URL.createObjectURL(x) : null; });
+            .then((x) => x ? this.blobToBase64(x) : null)
+        // return this.loadResource(part !== null && part !== void 0 ? part : this.documentPart, id, "blob")
+        //     .then(function (x) { return x ? URL.createObjectURL(x) : null; });
     };
     WordDocument.prototype.loadNumberingImage = function (id) {
         return this.loadResource(this.numberingPart, id, "blob")
@@ -4152,6 +4154,11 @@ var WordDocument = (function () {
     WordDocument.prototype.loadResource = function (part, id, outputType) {
         var path = this.getPathById(part, id);
         return path ? this._package.load(path, outputType) : Promise.resolve(null);
+    };
+    WordDocument.prototype.blobToBase64 = function (blob) {
+        const reader = new FileReader();
+        reader.readAsDataURL(blob);
+        return new Promise(resolve => reader.onloadend = () => resolve(reader.result));
     };
     return WordDocument;
 }());
